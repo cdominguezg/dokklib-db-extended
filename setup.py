@@ -7,9 +7,9 @@ with open('README.md') as f:
 print(find_packages(exclude=['tests*']))
 
 setup(
-    name='dokklib_db',
+    name='dokklib_db_extended',
     author='Agost Biro',
-    author_email='agost+dokklib_db@dokknet.com',
+    author_email='agost+dokklib_db_extended@dokknet.com',
     description='DynamoDB Single Table Library',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -18,7 +18,7 @@ setup(
     use_scm_version=True,
     # Needed to let mypy use package for type hints
     zip_safe=False,
-    package_data={"dokklib_db": ["py.typed"]},
+    package_data={"dokklib_db_extended": ["py.typed"]},
     setup_requires=['setuptools_scm'],
     python_requires='>=3.6',
     install_requires=[

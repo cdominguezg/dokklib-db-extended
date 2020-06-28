@@ -1,4 +1,4 @@
-import dokklib_db.serializer as m
+import dokklib_db_extended.serializer as m
 
 from tests.unit import TestBase
 

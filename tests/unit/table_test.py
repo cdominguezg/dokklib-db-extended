@@ -5,8 +5,8 @@ from boto3.dynamodb.conditions import Key
 
 from botocore.exceptions import ClientError
 
-import dokklib_db as db
-from dokklib_db.table import Table
+import dokklib_db_extended as db
+from dokklib_db_extended.table import Table
 
 from tests.unit import TestBase
 
@@ -80,7 +80,7 @@ class TestStripPrefixes(TestBase):
 
 class TestInit(TestBase):
     _to_patch = [
-        'dokklib_db.table.boto3'
+        'dokklib_db_extended.table.boto3'
     ]
 
     def test_client(self):
@@ -109,8 +109,8 @@ class TestInit(TestBase):
 
 class TableTestCaseMixin(ABC):
     _to_patch = [
-        'dokklib_db.table.boto3',
-        'dokklib_db.table.Table._client#PROPERTY'
+        'dokklib_db_extended.table.boto3',
+        'dokklib_db_extended.table.Table._client#PROPERTY'
     ]
 
     @abstractmethod

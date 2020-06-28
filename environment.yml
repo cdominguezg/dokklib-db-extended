@@ -2,8 +2,8 @@
 # Create a new Conda environment for development with:
 # `conda env create -f environment.yml`
 # Activate environment:
-# `conda activate dokklib_db`
-name: dokklib_db
+# `conda activate dokklib_db_extended`
+name: dokklib_db_extended
 dependencies:
   - python=3.6
   - ipython

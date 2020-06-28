@@ -1,9 +1,9 @@
 import re
 from typing import Any, Dict, List, Optional, Type
 
-from dokklib_db.errors import exceptions as ex
-from dokklib_db.errors.client import ClientError
-from dokklib_db.op_args import OpArg
+from dokklib_db_extended.errors import exceptions as ex
+from dokklib_db_extended.errors.client import ClientError
+from dokklib_db_extended.op_args import OpArg
 
 
 CancellationReasons = List[Optional[Type[ClientError]]]

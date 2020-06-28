@@ -3,8 +3,8 @@ from unittest.mock import patch
 
 import boto3.dynamodb.conditions as cond
 
-import dokklib_db as db
-import dokklib_db.op_args as m
+import dokklib_db_extended as db
+import dokklib_db_extended.op_args as m
 
 from tests.unit import TestBase
 
@@ -86,7 +86,7 @@ class TestPutArg(OpTestMixin, TestBase):
         super().setUp()
         self._op_arg = m.PutArg(self._pk, self._sk)
 
-    @patch('dokklib_db.op_args.PutArg._iso_now')
+    @patch('dokklib_db_extended.op_args.PutArg._iso_now')
     def test_adds_created_at(self, iso_now):
         exp_created_at = 'test-time-stamp'
         iso_now.return_value = exp_created_at

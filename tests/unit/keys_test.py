@@ -1,5 +1,5 @@
-import dokklib_db as db
-import dokklib_db.keys as m
+import dokklib_db_extended as db
+import dokklib_db_extended.keys as m
 
 from tests.unit import TestBase
 

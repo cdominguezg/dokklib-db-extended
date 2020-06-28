@@ -15,8 +15,8 @@ sort key.
 from abc import ABC
 from typing import Any, Dict, List, Optional, Tuple, Type, Union, cast
 
-from dokklib_db.index import GlobalIndex
-from dokklib_db.serializer import Serializer
+from dokklib_db_extended.index import GlobalIndex
+from dokklib_db_extended.serializer import Serializer
 
 AnySortKey = Union['SortKey', 'PrefixSortKey']
 
@@ -28,7 +28,7 @@ class EntityName(ABC):
     Eg. in "app/entities.py":
 
     ```python
-    import dokklib_db as db
+    import dokklib_db_extended as db
 
     class User(db.EntityName):
         pass

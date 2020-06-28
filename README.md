@@ -28,7 +28,7 @@ The earliest supported Boto3 version is `1.10.34` which is the same version as t
 ## Example usage
 
 ```python
-import dokklib_db as db
+import dokklib_db_extended as db
 
 
 class User(db.EntityName):

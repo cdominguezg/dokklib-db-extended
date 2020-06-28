@@ -1,5 +1,5 @@
-import dokklib_db as db
-from dokklib_db.errors.transaction import TransactionCanceledException
+import dokklib_db_extended as db
+from dokklib_db_extended.errors.transaction import TransactionCanceledException
 
 from tests.unit import TestBase
 

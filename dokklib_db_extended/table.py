@@ -10,14 +10,13 @@ import boto3.dynamodb.conditions as cond
 import botocore.client
 import botocore.exceptions as botoex
 
-import dokklib_db.errors as err
-from dokklib_db.index import GlobalIndex, GlobalSecondaryIndex, \
+import dokklib_db_extended.errors as err
+from dokklib_db_extended.index import GlobalIndex, GlobalSecondaryIndex, \
     PrimaryGlobalIndex
-from dokklib_db.keys import PartitionKey, PrefixSortKey, PrimaryKey, SortKey
-from dokklib_db.op_args import Attributes, DeleteArg, GetArg, InsertArg, \
+from dokklib_db_extended.keys import PartitionKey, PrefixSortKey, PrimaryKey, SortKey
+from dokklib_db_extended.op_args import Attributes, DeleteArg, GetArg, InsertArg, \
     OpArg, PutArg, QueryArg, UpdateArg
-from dokklib_db.serializer import Serializer
-
+from dokklib_db_extended.serializer import Serializer
 
 ItemResult = Mapping[str, Any]
 
@@ -96,7 +95,12 @@ class Table:
         return item_copy
 
     def __init__(self, table_name: str,
-                 primary_index: Optional[GlobalIndex] = None):
+                 primary_index: Optional[GlobalIndex] = None,
+                 region_name: Optional[str] = None,
+                 endpoint_url: Optional[str] = None,
+                 use_ssl: Optional[str] = None,
+                 aws_access_key_id: Optional[str] = None,
+                 aws_secret_access_key: Optional[str] = None):
         """Initialize a Table instance.
 
         Args:
@@ -115,7 +119,15 @@ class Table:
 
         # The boto objects are lazy-initialzied. Connections are not created
         # until the first request.
-        self._client_handle = boto3.client('dynamodb')
+        session = boto3.session.Session()
+        credentials = session.get_credentials()
+        self._client_handle = boto3.client('dynamodb',
+                                           endpoint_url=endpoint_url,
+                                           region_name=region_name or session.region_name,
+                                           use_ssl=use_ssl or True,
+                                           aws_access_key_id=aws_access_key_id or credentials.access_key,
+                                           aws_secret_access_key=aws_secret_access_key or credentials.secret_key,
+                                           )
 
     @property
     def _client(self) -> 'botocore.client.DynamoDB':
@@ -159,7 +171,7 @@ class Table:
             update_arg: The update item op argument.
 
         Raises:
-            dokklib_db.DatabaseError if there was a problem connecting to
+            dokklib_db_extended.DatabaseError if there was a problem connecting to
                 DynamoDB.
 
         """
@@ -293,9 +305,9 @@ class Table:
             attributes: Dictionary with additional attributes of the item.
 
         Raises:
-            dokklib_db.ItemExistsError if the item with the same composite
+            dokklib_db_extended.ItemExistsError if the item with the same composite
                 key already exists.
-            dokklib_db.DatabaseError if there was a problem connecting to
+            dokklib_db_extended.DatabaseError if there was a problem connecting to
                 DynamoDB.
 
         """
@@ -316,7 +328,7 @@ class Table:
             allow_overwrite: Whether to allow overwriting an existing item.
 
         Raises:
-            dokklib_db.DatabaseError if there was a problem connecting to
+            dokklib_db_extended.DatabaseError if there was a problem connecting to
                 DynamoDB.
 
         """
@@ -351,7 +363,7 @@ class Table:
             only 'foo@example.com' is returned.
 
         Raises:
-            dokklib_db.DatabaseError if there was an error querying the
+            dokklib_db_extended.DatabaseError if there was an error querying the
                 table.
 
         """
@@ -386,7 +398,7 @@ class Table:
             The requested items with the `PK` and `SK` prefixes stripped.
 
         Raises:
-            dokklib_db.DatabaseError if there was an error querying DynamoDB.
+            dokklib_db_extended.DatabaseError if there was an error querying DynamoDB.
 
         """
         if global_index:
@@ -400,7 +412,7 @@ class Table:
             attributes = [sk_name]
 
         key_condition = cond.Key(pk_name).eq(str(pk)) & \
-            cond.Key(sk_name).begins_with(str(sk))
+                        cond.Key(sk_name).begins_with(str(sk))
         query_arg = QueryArg(key_condition,
                              global_index=global_index,
                              attributes=attributes,
@@ -415,8 +427,8 @@ class Table:
             op_args: Write operation arguments.
 
         Raises:
-            dokklib_db.TransactionError if the transaction fails.
-            dokklib_db.DatabaseError if there was a problem connecting
+            dokklib_db_extended.TransactionError if the transaction fails.
+            dokklib_db_extended.DatabaseError if there was a problem connecting
                 DynamoDB.
 
         """
@@ -442,7 +454,7 @@ class Table:
                 will overwritten if they exist or created if they don't exist.
 
         Raises:
-            dokklib_db.DatabaseError if there was a problem connecting to
+            dokklib_db_extended.DatabaseError if there was a problem connecting to
                 DynamoDB.
 
         """

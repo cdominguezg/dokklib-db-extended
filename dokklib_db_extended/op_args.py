@@ -7,9 +7,9 @@ import boto3.dynamodb.conditions as cond
 
 from typing_extensions import Literal
 
-from dokklib_db.index import GlobalIndex, GlobalSecondaryIndex
-from dokklib_db.keys import PartitionKey, PrimaryKey, SortKey
-from dokklib_db.serializer import Serializer
+from dokklib_db_extended.index import GlobalIndex, GlobalSecondaryIndex
+from dokklib_db_extended.keys import PartitionKey, PrimaryKey, SortKey
+from dokklib_db_extended.serializer import Serializer
 
 _DynamoValue = Union[str, bool]
 

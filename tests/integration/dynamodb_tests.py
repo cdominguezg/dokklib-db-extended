@@ -8,7 +8,7 @@ import logging
 
 import boto3
 
-import dokklib_db as db
+import dokklib_db_extended as db
 
 
 TABLE_NAME = 'DokklibDB-IntegrationTest-SingleTable'
@@ -37,8 +37,7 @@ class User(db.EntityName):
 class Product(db.EntityName):
     """Order entity name.
 
-    Key v
-    alue: unique product name, eg: 'my-book'.
+    Key value: unique product name, eg: 'my-book'.
     Example key: 'PRODUCT#my-book'.
 
     """
@@ -123,10 +122,10 @@ logging.info('Testing query_prefix')
 res = table.query_prefix(pk_alice, db.PrefixSortKey(Order))
 assert len(res) == 2, res
 
-logging.info('Testing query_prefix on inverse index')
-res = table.query_prefix(pk_order1, db.PrefixSortKey(User),
-                         global_index=db.InversePrimaryIndex())
-assert len(res) == 1, res
+# logging.info('Testing query_prefix on inverse index')
+# res = table.query_prefix(pk_order1, db.PrefixSortKey(User),
+#                          global_index=db.InversePrimaryIndex())
+# assert len(res) == 1, res
 
 logging.info('Testing delete')
 table.delete(pk_alice, sk_alice, idempotent=False)

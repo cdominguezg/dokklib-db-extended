@@ -4,7 +4,7 @@
 Boto3 creates exceptions dynamically from a service model which is not
 desirable, because it breaks static analysis. This script generates a Python
 file from the dynamically loaded Boto3 exceptions and puts it in
-dokklib_db/exceptions.py
+dokklib_db_extended/exceptions.py
 
 """
 import boto3
@@ -46,7 +46,7 @@ lines = [
     'Do not edit it manually!',
     '',
     '"""',
-    'from dokklib_db.errors.client import ClientError',
+    'from dokklib_db_extended.errors.client import ClientError',
     '',
     ''
 ]
@@ -62,5 +62,5 @@ for name in MISSING_EXCEPTIONS:
 
 # Remove duplicate empty line
 lines = lines[:-1]
-with open('dokklib_db/errors/exceptions.py', 'w') as f:
+with open('dokklib_db_extended/errors/exceptions.py', 'w') as f:
     f.write('\n'.join(lines))
