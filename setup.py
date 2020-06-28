@@ -8,8 +8,8 @@ print(find_packages(exclude=['tests*']))
 
 setup(
     name='dokklib_db_extended',
-    author='Agost Biro',
-    author_email='agost+dokklib_db_extended@dokknet.com',
+    author='Agost Biro, Cristian Dominguez',
+    author_email='agost+dokklib_db_extended@dokknet.com, crisdomgo@gmail.com',
     description='DynamoDB Single Table Library',
     long_description=long_description,
     long_description_content_type='text/markdown',
