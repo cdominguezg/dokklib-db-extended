@@ -7,11 +7,11 @@ testing table. !!!
 import logging
 
 import boto3
+from boto3.dynamodb.conditions import Key
 
 import dokklib_db_extended as db
 
-
-TABLE_NAME = 'DokklibDB-IntegrationTest-SingleTable'
+TABLE_NAME = 'Windelivery-ESB-Dokklib'
 
 logging.basicConfig(level=logging.INFO)
 
@@ -68,10 +68,12 @@ logging.info('Starting integration tests')
 # We clear the DB instead of recreating it to save time.
 _clear_db(TABLE_NAME)
 table = db.Table(TABLE_NAME)
-
+#
 # Users
 pk_alice = db.PartitionKey(User, 'alice@example.com')
 sk_alice = db.SortKey(User, 'alice@example.com')
+
+
 
 # Products
 pk_book = db.PartitionKey(Product, 'book')
@@ -83,6 +85,9 @@ sk_order2 = db.SortKey(Order, '2020-02-21|order-2')
 
 logging.info('Testing insert')
 table.insert(pk_alice, sk_alice)
+logging.info('Testing Scan')
+res = table.scan(Key('PK').begins_with('USER') & Key('SK').begins_with('USER'))
+assert len(res) == 1, res
 
 logging.info('Testing update_attributes')
 table.update_attributes(pk_alice, sk_alice, {'MyJson': {'A': 1}})
@@ -122,12 +127,12 @@ logging.info('Testing query_prefix')
 res = table.query_prefix(pk_alice, db.PrefixSortKey(Order))
 assert len(res) == 2, res
 
-# logging.info('Testing query_prefix on inverse index')
-# res = table.query_prefix(pk_order1, db.PrefixSortKey(User),
-#                          global_index=db.InversePrimaryIndex())
-# assert len(res) == 1, res
+logging.info('Testing query_prefix on inverse index')
+res = table.query_prefix(pk_order1, db.PrefixSortKey(User),
+                         global_index=db.InversePrimaryIndex())
+assert len(res) == 1, res
 
 logging.info('Testing delete')
-table.delete(pk_alice, sk_alice, idempotent=False)
 
+table.delete(pk_alice, sk_alice, idempotent=False)
 logging.info('+++ Success +++')

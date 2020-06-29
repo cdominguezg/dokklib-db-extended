@@ -13,7 +13,7 @@ import botocore.exceptions as botoex
 import dokklib_db_extended.errors as err
 from dokklib_db_extended.index import GlobalIndex, GlobalSecondaryIndex, \
     PrimaryGlobalIndex
-from dokklib_db_extended.keys import PartitionKey, PrefixSortKey, PrimaryKey, SortKey
+from dokklib_db_extended.keys import PartitionKey, PrefixSortKey, PrimaryKey, SortKey, EntityName
 from dokklib_db_extended.op_args import Attributes, DeleteArg, GetArg, InsertArg, \
     OpArg, PutArg, QueryArg, UpdateArg
 from dokklib_db_extended.serializer import Serializer
@@ -129,10 +129,22 @@ class Table:
                                            aws_secret_access_key=aws_secret_access_key or credentials.secret_key,
                                            )
 
+        self._table_resource = boto3.resource('dynamodb',
+                                              endpoint_url=endpoint_url,
+                                              region_name=region_name or session.region_name,
+                                              use_ssl=use_ssl or True,
+                                              aws_access_key_id=aws_access_key_id or credentials.access_key,
+                                              aws_secret_access_key=aws_secret_access_key or credentials.secret_key,
+                                              ).Table(self.table_name)
+
     @property
     def _client(self) -> 'botocore.client.DynamoDB':
         # Helps mock the client at test time.
         return self._client_handle
+
+    @property
+    def _table(self):
+        return self._table_resource
 
     @property
     def primary_index(self) -> GlobalIndex:
@@ -262,6 +274,17 @@ class Table:
         kwargs = delete_arg.get_kwargs(self.table_name, self.primary_index)
         with self._dispatch_error():
             self._client.delete_item(**kwargs)
+
+    def scan(self, key_condition):
+        response = self._table.scan(FilterExpression=key_condition)
+        items = response.get('Items', [])
+        while 'LastEvaluatedKey' in response:
+            response = self._table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
+            items.extend(response['items'])
+
+        stripped_items = [self._strip_prefixes(item) for item in items]
+
+        return stripped_items
 
     def get(self, pk: PartitionKey, sk: SortKey,
             attributes: Optional[List[str]] = None,
