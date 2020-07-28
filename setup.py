@@ -7,7 +7,7 @@ def local_scheme(version):
     return ""
 setup(
     name='dokklib_db_extended',
-    version='0.1.3',
+    version='0.1.4',
     author='Agost Biro, Cristian Dominguez',
     author_email='agost+dokklib_db_extended@dokknet.com, crisdomgo@gmail.com',
     description='DynamoDB Single Table Library',

@@ -57,6 +57,8 @@ class EntityName(ABC):
         """
         if cls is EntityName:
             raise TypeError(f'Entity names must inherit from {cls.__name__}.')  # pragma: no cover  # noqa 501
+        if 'name' in cls.__dict__ and type(cls.__dict__['name']) is str:
+            return cls.__dict__['name'].upper() + '#'
         return cls.__name__.upper() + '#'
 
 
